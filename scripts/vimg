@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-SCRIPT=`realpath $0`
+SCRIPT=`realpath "$0"`
 
 readonly BASH_BINARY="$(which bash)"
 declare -x PREVIEW_ID="preview"
 
 declare -x TMP_FOLDER="/tmp/vimg"
-mkdir -p $TMP_FOLDER
+mkdir -p "$TMP_FOLDER"
 
 function render_at_size {
   max_width="${1}"
@@ -14,7 +14,7 @@ function render_at_size {
   img_path="${3}"
 
   # animation is turned off as it does werid things with the terminal output
-  chafa --animate=off --center=on --clear --size "${max_width}x${max_height}" "${img_path}"
+  chafa --animate=off --center=on --clear --size "${max_width}x${max_height}" "$img_path"
 }
 
 function draw_preview {
@@ -47,7 +47,7 @@ function draw_preview {
     elif [[ "$1" == "pdfpreview" ]]; then
       path="${2##*/}"
         echo -e "Loading preview..\nFile: $path"
-        [[ ! -f "${TMP_FOLDER}/${path}.png" ]] && pdftoppm -png -singlefile "$2" "${TMP_FOLDER}/${path}.png"
+        [[ ! -f "${TMP_FOLDER}/${path}" ]] && pdftoppm -png -singlefile "$2" "${TMP_FOLDER}/${path}"
         clear
         render_at_size "${5}" "${6}" "${TMP_FOLDER}/${path}.png" "${7}"
     fi
@@ -57,19 +57,19 @@ function parse_options {
     extension="${1##*.}"
     case $extension in
     jpg | png | jpeg | webp | svg)
-        draw_preview  imagepreview "$1" $2 $3 $4 $5 $6
+        draw_preview  imagepreview "$1" "$2" "$3" "$4" "$5" "$6"
     ;;
 
     gif)
-        draw_preview  gifpreview "$1" $2 $3 $4 $5 $6
+        draw_preview  gifpreview "$1" "$2" "$3" "$4" "$5" "$6"
     ;;
 
     avi | mp4 | wmv | dat | 3gp | ogv | mkv | mpg | mpeg | vob |  m2v | mov | webm | mts | m4v | rm  | qt | divx)
-        draw_preview  videopreview "$1" $2 $3 $4 $5 $6
+        draw_preview  videopreview "$1" "$2" "$3" "$4" "$5" "$6"
     ;;
 
     pdf | epub)
-        draw_preview  pdfpreview "$1" $2 $3 $4 $5 $6
+        draw_preview  pdfpreview "$1" "$2" "$3" "$4" "$5" "$6"
     ;;
 
     *)
